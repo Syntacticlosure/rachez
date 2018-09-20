@@ -1,5 +1,6 @@
 (library (rachez list)
-         (export build-list check-duplicates remove-duplicates)
+         (export build-list check-duplicates remove-duplicates
+                 range)
          (import (chezscheme))
 
          (define (build-list n proc)
@@ -23,5 +24,10 @@
            (if (null? lst)
                '()
                (cons (car lst) (remove-duplicates (remove (car lst) (cdr lst))))))
+         (define range
+           (case-lambda
+             [(s e) (if (>= s e) '()
+                        (cons s (range (+ s 1) e)))]
+             [(e) (range 0 e)]))
          )
          

@@ -1,6 +1,7 @@
 (library (rachez for)
          (export in-list in-vector in-alist for <-
-                 for/sum for/list)
+                 for/sum for/list for/vector
+                 for/and for/or)
          (import (chezscheme))
 
          (define-syntax in-list (syntax-rules ()))
@@ -51,6 +52,32 @@
                 (for matcher <- val
                   (set! acc (cons (let () do ...) acc)))
                 (reverse acc))]))
-              
+
+         (define-syntax for/vector
+           (syntax-rules (<-)
+             [(_ matcher <- val do ...)
+              (list->vector (for/list matcher <- val do ...))]))
+
+         (define-syntax for/and
+           (syntax-rules (<-)
+             [(_ matcher <- val do ...)
+              (call/cc (lambda (exit)
+                         (for matcher <- val
+                           (if (let () do ...)
+                               (void)
+                               (exit #f)))
+                         #t))]))
+
+         (define-syntax for/or
+           (syntax-rules (<-)
+             [(_ matcher <- val do ...)
+              (call/cc (lambda (exit)
+                         (for matcher <- val
+                           (if (let () do ...)
+                               (exit #t)
+                               (void)
+                               ))
+                         #f))]))
+         
                  
          )
