@@ -26,3 +26,5 @@
 (display (for/and i <- (in-list '(1 2 3 -4)) (> i 0)))
 (display (for/or i <- (in-list '(1 2 3 4)) (< i 0)))
 (display (for/or i <- (in-list '(1 2 3 -4)) (< i 0)))
+(newline)
+(for i <- (in-string "testabc") (display i))

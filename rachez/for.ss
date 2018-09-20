@@ -1,5 +1,7 @@
 (library (rachez for)
-         (export in-list in-vector in-alist for <-
+         (export in-list in-vector in-alist
+                 in-string
+                 for <-
                  for/sum for/list for/vector
                  for/and for/or)
          (import (chezscheme))
@@ -8,8 +10,9 @@
          (define-syntax in-vector (syntax-rules ()))
          (define-syntax in-alist (syntax-rules ()))
          (define-syntax <- (syntax-rules ()))
+         (define-syntax in-string (syntax-rules ()))
          (define-syntax for
-           (syntax-rules (in-list in-vector in-alist <-)
+           (syntax-rules (in-list in-vector in-alist <- in-string)
              [(_ var <- (in-list val) block ...)
               (let loop ((lst val))
                 (if (null? lst)
@@ -33,6 +36,13 @@
                           )
                       block ...
                       (loop (cdr pos)))))]
+             [(_ var <- (in-string val) block ...)
+              (let loop ((pos 0))
+                (if (>= pos (string-length val))
+                    (void)
+                    (let ([var (string-ref val pos)])
+                      block ...
+                      (loop (+ pos 1)))))]
              ))
 
          (define-syntax for/sum
