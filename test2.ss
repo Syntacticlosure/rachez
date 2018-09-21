@@ -1,0 +1,13 @@
+(import (chezscheme) (rachez for) (rachez list))
+(display (for/sum i <-
+           (in-list (range 10000) when (<= i 100))
+           i))
+(newline)
+(display (for/sum i <- (in-naturals when (<= i 100))
+           i))
+(newline)
+(display (for/sum i <- (in-range 100 when (<= (* i i) 100))
+           i))
+(newline)
+(for i <- (in-range 11) (display i))
+(newline)
