@@ -2,7 +2,7 @@
 
 (library (rachez parser)
          (export satisfy/p equal/p parser digit/p alpha/p parse-string
-                 eof/p)
+                 eof/p many/p)
          (import (chezscheme))
 
          (define (satisfy/p procedure)
@@ -19,11 +19,30 @@
          
          (define (eof/p l) (if (null? l) (list 'parse-success #f '())
                                'parse-fail))
+         (define (or/p p . parsers)
+           (lambda (l)
+             (let ([res (p l)])
+               (cond [(eq? res 'parse-fail) (if (null? parsers) 'parse-fail
+                                                ((apply or/p parsers) l))]
+                     [else res]))))
+
+         (define (many/p p)
+           (or/p 
+            (parser [a p]
+                    [r (many/p p)]
+                    (cons a r))
+            (parser '())))
+
+         (define (some/p p)
+           (parser [a p]
+                   [r (many/p p)]
+                   (cons a r)))
+         
 
          (define-syntax parser
            (syntax-rules ()
              [(_  return-value)  (lambda (l)
-                                   (list 'parse-success return-value))]
+                                   (list 'parse-success return-value l))]
              [(_ [var val] rest ...)
               (lambda (l)
                 (let ([res (val l)])
@@ -38,6 +57,8 @@
            (cond [(eq? res 'parse-fail) (error 'parser "parse failed")]
                  [(eq? (car res) 'parse-success)
                   (cadr res)]))
+
+         
 
          
            
